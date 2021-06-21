@@ -29,8 +29,8 @@ else
   COMMIT_JSON=$(curl https://$DEPLOY_BITBUCKET_USER:$DEPLOY_BITBUCKET_APP_PASSWORD@api.bitbucket.org/2.0/repositories/$DEPLOY_BITBUCKET_ORG/$DEPLOY_BITBUCKET_PROJECT/commit/$SOURCE_VERSION)
   AUTHOR_NAME=$(echo "$COMMIT_JSON" | python3 -c "import sys, json; print(json.load(sys.stdin, strict=False)['author']['raw'])" || echo '')
   COMMIT_MESSAGE=$((echo "$COMMIT_JSON" | python3 -c "import sys, json; print(json.load(sys.stdin, strict=False)['rendered']['message']['raw'])" || echo '') | head -n 1)
-  COMMIT_URL=$(echo "$COMMIT_JSON" | python3 -c "import sys, json; print(json.load(sys.stdin, strict=False)['links']['self']['href'])" || echo 'Can not reach Github...')
-  SLACK_MESSAGE="*$HEROKU_APP_NAME* was deployed\n>$AUTHOR_NAME\n\n\`\`\`\n$COMMIT_MESSAGE\n\`\`\`\n$COMMIT_URL"
+  COMMIT_URL=$(echo "$COMMIT_JSON" | python3 -c "import sys, json; print(json.load(sys.stdin, strict=False)['links']['html']['href'])" || echo 'Can not reach Github...')
+  SLACK_MESSAGE="*$HEROKU_APP_NAME* was deployed\n>$AUTHOR_NAME\n\n$COMMIT_MESSAGE\n$COMMIT_URL"
 fi
 
 echo "-----> Notifying Slack that the deploy is complete"
